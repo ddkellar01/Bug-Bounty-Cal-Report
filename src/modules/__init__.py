@@ -1,1 +1,1 @@
-"""Security and analysis modules."""
+"""Modules package: scoring engines and report builders."""
