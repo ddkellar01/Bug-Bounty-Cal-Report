@@ -1,28 +1,33 @@
 [build-system]
-requires = ["setuptools>=68.0.0", "wheel"]
+requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "bug-bounty-cal-report"
 version = "1.0.0"
-description = "Advanced bug bounty CVSS calculator, multi-agent vulnerability auditor, and report generator."
-readme = "README.md"
+description = "Bug bounty CVSS calculator and report generator with a FastAPI server."
 requires-python = ">=3.11"
 dependencies = [
-    "click>=8.1.7",
-    "rich>=13.7.1",
-    "pydantic>=2.6.0",
-    "pydantic-settings>=2.1.0",
-    "google-genai>=1.0.0",
-    "requests>=2.31.0",
-    "fastapi>=0.110.0",
-    "uvicorn>=0.28.0",
-    "jinja2>=3.1.3",
-    "httpx>=0.27.0"
+    "fastapi",
+    "uvicorn",
+    "pydantic>=2",
 ]
 
-[tool.setuptools]
-packages = ["src", "src.modules"]
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "httpx",
+]
 
-[project.scripts]
-bugbounty = "src.orchestrator:main"
+# The code lives in a package literally named "src" (imports look like
+# `from src.modules.cvss_calculator import ...`), so packages are found
+# from the repo root, NOT via a src-layout package-dir remap. Remapping
+# package-dir to "src" is what broke these imports in CI.
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
