@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  engine:
+    build: .
+    container_name: bug_bounty_engine
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MONAD_RPC_URL=${MONAD_RPC_URL}
+    command: ["python", "src/api_server.py"]
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
