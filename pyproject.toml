@@ -21,9 +21,8 @@ dependencies = [
     "httpx>=0.27.0"
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+[tool.setuptools]
+packages = ["src", "src.modules"]
 
 [project.scripts]
 bugbounty = "src.orchestrator:main"
