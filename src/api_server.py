@@ -1,29 +1,67 @@
+"""Bug Bounty Cal-Report API server (FastAPI).
+
+Endpoints:
+    GET  /          health check
+    POST /calculate {"vector": "CVSS:3.1/..."} -> base score + severity
+    POST /report    finding details -> scored markdown bug bounty report
+"""
+
+from src.modules.cvss_calculator import calculate_cvss
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from src.modules.cvss_calculator import calculate_cvss
-from src.problem_solver import ProblemSolverEngine
 
-app = FastAPI(title="BugBounty-Cal-Report API", version="1.0.0")
+app = FastAPI(title="Bug Bounty Cal-Report", version="1.0.0")
 
-class AuditRequest(BaseModel):
+
+class CalculateRequest(BaseModel):
+    vector: str
+
+
+class ReportRequest(BaseModel):
+    title: str
     target: str
-    impact_score: float
-    complexity: str = "high"
-    zero_day: bool = False
-    vector: str = "AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    vector: str
+    description: str = ""
+    impact: str = ""
+    remediation: str = ""
 
-@app.get("/health")
-def health_check():
-    return {"status": "healthy", "service": "bug-bounty-cal-report"}
 
-@app.post("/api/v1/audit")
-def run_api_audit(payload: AuditRequest):
-    score, severity = calculate_cvss(payload.vector)
-    tier = ProblemSolverEngine.classify(payload.dict())
-    return {
-        "target": payload.target,
-        "cvss_score": score,
-        "severity": severity,
-        "problem_tier": tier.value,
-        "status": "completed"
-    }
+@app.get("/")
+def health() -> dict:
+    return {"status": "ok", "service": "Bug Bounty Cal-Report"}
+
+
+@app.post("/calculate")
+def calculate(req: CalculateRequest) -> dict:
+    try:
+        return calculate_cvss(req.vector)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/report")
+def report(req: ReportRequest) -> dict:
+    try:
+        result = calculate_cvss(req.vector)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    lines = [
+        f"# {req.title}",
+        "",
+        f"**Target:** {req.target}",
+        f"**Severity:** {result['severity']} ({result['base_score']})",
+        f"**CVSS Vector:** {result['vector']}",
+        "",
+        "## Description",
+        req.description or "TODO: describe the vulnerability.",
+        "",
+        "## Impact",
+        req.impact or "TODO: describe the impact.",
+        "",
+        "## Remediation",
+        req.remediation or "TODO: describe the fix.",
+        "",
+    ]
+    return {**result, "report": "\n".join(lines)}
