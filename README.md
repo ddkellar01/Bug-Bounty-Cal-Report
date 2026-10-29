@@ -1,4 +1,4 @@
-# 🐛 Bug Bounty Cal-Report
+# 🐛 Bug-Bounty-Cal-Report
 
 **Bug bounty CVSS calculator + report generator with a FastAPI server.** 🎯
 Score any finding with a real CVSS v3.1 engine, then turn it into a clean,
