@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bug-bounty-cal-report"
+version = "1.0.0"
+description = "Advanced bug bounty CVSS calculator, multi-agent vulnerability auditor, and report generator."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1.7",
+    "rich>=13.7.1",
+    "pydantic>=2.6.0",
+    "google-genai>=1.0.0",
+    "requests>=2.31.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "jinja2>=3.1.3"
+]
+
+[project.scripts]
+bugbounty = "src.orchestrator:main"
