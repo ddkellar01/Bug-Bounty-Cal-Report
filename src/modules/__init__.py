@@ -1,1 +1,1 @@
-"""Security modules for BugBounty-Cal-Report."""
+"""Security and analysis modules."""
