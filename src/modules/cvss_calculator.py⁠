@@ -7,7 +7,6 @@ def calculate_cvss(vector_string: str):
             k, v = part.split(":")
             metrics[k] = v
 
-    # Simplified deterministic CVSS 3.1 score mapping for demo
     c_impact = 0.56 if metrics.get("C") == "H" else 0.22
     i_impact = 0.56 if metrics.get("I") == "H" else 0.22
     iss = 1.0 - ((1.0 - c_impact) * (1.0 - i_impact))
