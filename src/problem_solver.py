@@ -8,7 +8,7 @@ class ProblemTier(Enum):
     CHAOTIC = "Chaotic (Crisis / Zero-Day Detonation)"
 
 class ProblemSolverEngine:
-    """Classifies vulnerabilities and runtime anomalies into a 4-tier problem-solving architecture."""
+    """Classifies vulnerabilities into a 4-tier problem-solving architecture."""
     
     @staticmethod
     def classify(finding: Dict[str, Any]) -> ProblemTier:
