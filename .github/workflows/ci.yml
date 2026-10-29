@@ -10,10 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
-    # Inject repository secrets into the container environment
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       MONAD_RPC_URL: ${{ secrets.MONAD_RPC_URL }}
+      PYTHONPATH: .
 
     steps:
       - name: Checkout Repository
@@ -23,12 +23,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: 'pip'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov
 
       - name: Run Test Suite
         run: pytest tests/ -v
